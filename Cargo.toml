@@ -6,4 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nannou = "0.17"
+nannou = "0.19.0"
+palette = { version = "0.5.0", features = ["named_from_str"] }
