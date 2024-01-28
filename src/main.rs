@@ -1,5 +1,5 @@
 extern crate nannou;
-use nannou::{event, prelude::*};
+use nannou::prelude::*;
 use std::time::Instant;
 
 mod drawers;
@@ -14,43 +14,30 @@ fn main() {
 }
 
 struct Mouse {
-    pos: Point2,
     is_drag: bool,
 }
 struct Model {
     bg_color: String,
-    x: f32,
-    y: f32,
-    radius: f32,
     grid_size: f32,
     mouse: Mouse,
-    sand: Vec<Point2>,
+    sand: Vec<Vec<bool>>,
     last_update: Instant,
 }
 
 fn model(_app: &App) -> Model {
-    let initial_mouse_pos = pt2(0.0, 0.0);
-    let mouse = Mouse {
-        pos: initial_mouse_pos,
-        is_drag: false,
-    };
+    let win = _app.window_rect();
+    let mouse = Mouse { is_drag: false };
     Model {
         bg_color: "honeydew".to_string(),
-        x: 0.0,
-        y: 0.0,
-        radius: 10.0,
         grid_size: 10.0,
-        mouse: mouse,
-        sand: Vec::new(),
+        mouse,
+        sand: vec![vec![false; (win.w() * 2.0 / 10.0) as usize]; (win.h() * 2.0 / 10.0) as usize],
         last_update: Instant::now(),
     }
 }
 
 fn update(_app: &App, _model: &mut Model, _update: Update) {
     if _model.last_update.elapsed().as_secs() >= 1 {
-        if _model.radius < 500.0 {
-            _model.radius += 10.0;
-        }
         _model.last_update = Instant::now();
     }
 }
@@ -59,13 +46,6 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     let draw = _app.draw();
     draw.background()
         .color(from_str(&_model.bg_color).unwrap_or(BLACK));
-    draw.ellipse()
-        .color(STEELBLUE)
-        .w(_model.radius)
-        .h(_model.radius)
-        .x_y(_model.x, _model.y);
-
-    draw.rect().x_y(0.0, 100.0).w_h(30.0, 50.0).color(YELLOW);
 
     let win = _app.window_rect();
     let mut curr_y = -win.h();
@@ -79,8 +59,16 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
         curr_x += _model.grid_size;
     }
 
-    for pos in &_model.sand {
-        rect(&draw, pos.x, pos.y, _model.grid_size, _model.grid_size);
+    for (y, row) in _model.sand.iter().enumerate() {
+        for (x, &should_draw) in row.iter().enumerate() {
+            if should_draw {
+                // Calculate the position based on grid coordinates
+                let pos_x = x as f32 * _model.grid_size - (win.w() / 2.0);
+                let pos_y = y as f32 * _model.grid_size - (win.h() / 2.0);
+                // Draw the rectangle
+                rect(&draw, pos_x, pos_y, _model.grid_size, _model.grid_size);
+            }
+        }
     }
 
     draw.to_frame(_app, &frame).unwrap();
@@ -100,9 +88,16 @@ fn event(_app: &App, _model: &mut Model, event: Event) {
             }
             WindowEvent::MouseMoved(position) => {
                 if _model.mouse.is_drag {
-                    // Update mouse position only if dragging
-                    _model.mouse.pos = position.into();
-                    _model.sand.push(position.into());
+                    let win = _app.window_rect();
+                    let grid_x = (position.x + win.w() / 2.0) / _model.grid_size;
+                    let grid_y = (position.y + win.h() / 2.0) / _model.grid_size;
+                    if grid_x >= 0.0
+                        && grid_x < (win.w() * 2.0) / _model.grid_size as f32
+                        && grid_y >= 0.0
+                        && grid_y < (win.h() * 2.0) / _model.grid_size as f32
+                    {
+                        _model.sand[grid_y as usize][grid_x as usize] = true;
+                    }
                 }
             }
             _ => {}
