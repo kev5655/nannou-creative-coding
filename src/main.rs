@@ -41,8 +41,8 @@ fn model(app: &App) -> Model {
         bg_color: "black".to_string(),
         grid_size,
         mouse,
-        sand: vec![vec![false; sand_size]; sand_size],
-        dirty_cells: Vec::new(),
+        grid: vec![vec![false; sand_size]; sand_size],
+        sand_blocks: Vec::new(),
         last_update: Instant::now(),
     }
 }
@@ -54,8 +54,9 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
 
     let win = _app.window_rect();
 
-    for &(x, y) in &_model.dirty_cells {
+    for &(x, y) in &_model.sand_blocks {
         let size = _model.grid_size as f32;
+        // ToDo remove win.w() and win.h() dynamic problem
         let (pos_x, pos_y) =
             convert_grid_to_00win(x, y, win.w(), win.h(), size);
         rect(&draw, pos_x, pos_y, size - 1.0, size - 1.0, STEELBLUE);
