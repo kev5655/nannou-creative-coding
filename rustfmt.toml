@@ -1,0 +1,12 @@
+# Sets the maximum line length
+max_width = 70
+# Use spaces instead of tabs for indentation
+hard_tabs = false
+# Configure the number of spaces per indentation level
+tab_spaces = 4
+# Controls the placement of braces
+brace_style = "SameLineWhere"
+# Determines where to put the trailing comma
+trailing_comma = "Never"
+# Controls the formatting of function parameters
+fn_args_layout = "Compressed"
