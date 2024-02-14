@@ -24,7 +24,7 @@ fn main() {
 fn model(app: &App) -> Model {
     // Create the window first
     let window_size: u32 = 800.0 as u32; // This matches the size specified in the window creation
-    let grid_size: u32 = 50.0 as u32;
+    let grid_size: u32 = 10.0 as u32;
     app.new_window()
         .size(window_size, window_size)
         .view(view)
@@ -43,7 +43,10 @@ fn model(app: &App) -> Model {
         mouse,
         grid: vec![vec![false; sand_size]; sand_size],
         sand_blocks: Vec::new(),
+        sand_blocks_blocked: Vec::new(),
         last_update: Instant::now(),
+        game_speed: 10,
+        performance_update_time: Instant::now(),
     }
 }
 
@@ -62,5 +65,7 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
         rect(&draw, pos_x, pos_y, size - 1.0, size - 1.0, STEELBLUE);
     }
 
+
     draw.to_frame(_app, &frame).unwrap();
+
 }
