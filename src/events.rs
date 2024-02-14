@@ -22,8 +22,8 @@ pub fn moved(_app: &App, _model: &mut Model, p: Point2) {
         if r_y < win.h() && r_y >= 0.0 && r_x < win.w() && r_x >= 0.0
         {
             let size = _model.grid_size;
-            let g_y: usize = (r_y / size as f32).floor() as usize;
-            let g_x: usize = (r_x / size as f32).floor() as usize;
+            let g_y: usize = (r_y / size).floor() as usize;
+            let g_x: usize = (r_x / size).floor() as usize;
             if !_model.grid[g_y][g_x] {
                 _model.grid[g_y][g_x] = true;
                 _model.sand_blocks.push((g_x, g_y))

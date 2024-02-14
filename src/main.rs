@@ -62,7 +62,7 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
         // ToDo remove win.w() and win.h() dynamic problem
         let (pos_x, pos_y) =
             convert_grid_to_00win(x, y, win.w(), win.h(), size);
-        rect(&draw, pos_x, pos_y, size - 1.0, size - 1.0, STEELBLUE);
+        rect(&draw, pos_x, pos_y, size, size, STEELBLUE);
     }
 
 
