@@ -13,13 +13,12 @@ pub fn arrow(draw: &Draw, x: u32, y: u32, radiant: f32, scalar: f32, window: Rec
             + pt2(x as f32, y as f32)
         , window);
 
-    // let start_p = convert_p(
-    //     start_p(x as f32, y as f32, vec * scalar), window);
-    // let end_p = convert_p(
-    //     end_p(x as f32, y as f32, vec * scalar), window);
-
     draw.arrow().start(start_p).end(end_p).stroke_weight(1.0).color(WHITE);
     // draw.line().start(start_p).end(end_p).stroke_weight(2.0).color(WHITE);
+}
+
+pub fn circle(draw: &Draw, point2: Point2, diameter: f32){
+    draw.ellipse().xy(point2).radius(diameter);
 }
 
 fn convert_p(point2: Point2, window: Rect) -> Point2 {

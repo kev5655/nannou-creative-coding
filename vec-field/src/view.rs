@@ -1,5 +1,5 @@
 use nannou::{App, Frame};
-use crate::drawers::arrow;
+use crate::drawers::{arrow, circle};
 use crate::models::Model;
 
 pub fn view(_app: &App, _model: &Model, _frame: Frame){
@@ -13,6 +13,10 @@ pub fn view(_app: &App, _model: &Model, _frame: Frame){
             let (c_x, c_y) = convert(x, y, _model.ui.grid_size);
             arrow(&draw, c_x, c_y, element.radiant, _model.ui.arrow_length, win)
         }
+    }
+
+    for object in _model.objects.iter() {
+        circle(&draw, object.position, 10.0)
     }
 
     draw.to_frame(_app, &_frame).unwrap()
