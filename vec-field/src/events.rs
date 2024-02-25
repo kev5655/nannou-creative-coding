@@ -11,7 +11,7 @@ pub fn pressed(_app: &App, _model: &mut Model, _button: MouseButton) {
          position,
          velocity: 1.0,
          vector: Vector {
-             vector: vec2(random_range(-1.0, 1.0), random_range(-1.0, 1.0)),
+             direction: vec2(random_range(-1.0, 1.0), random_range(-1.0, 1.0)),
              radiant: Default::default(),
          }
      })

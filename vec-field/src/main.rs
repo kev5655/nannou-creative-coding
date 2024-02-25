@@ -3,54 +3,39 @@ mod updater;
 mod view;
 mod drawers;
 mod events;
+mod vector_field;
 
-use std::f32::consts::PI;
+use std::ops::Div;
 use std::time::Instant;
 use nannou::App;
 use nannou::color::GRAY;
+use nannou::geom::Vec2;
 use nannou::glam::vec2;
-use nannou::rand::random_range;
 use models::Model;
-use updater::updater;
-use crate::events::pressed;
-use crate::models::{UI, Vector};
-use crate::view::view;
+use crate::models::UI;
+use crate::vector_field::for_vec_field;
 
 fn main() {
-    nannou::app(model).update(updater).run();
+    nannou::app(model).update(updater::updater).run();
 }
 
 
 fn model(app: &App) -> Model {
-    let win_size = 1200;
-    let grid_elements = 50;
+    let win_size = vec2(1200.0, 1200.0);
+    let grid_elements: u32 = 50;
     let arrow_length = 10.;
-    let grid_size = win_size / grid_elements;
+    let grid_size: Vec2 = win_size / grid_elements as f32;
 
     println!("window_size: {} grid_size: {} grid_elements: {}", win_size, grid_size, grid_elements);
 
     app.new_window()
-        .size(win_size, win_size)
-        .view(view)
-        .mouse_pressed(pressed)
+        .size(win_size.x as u32, win_size.y as u32)
+        .view(view::view)
+        .mouse_pressed(events::pressed)
         .build()
         .unwrap();
 
-    let step = PI * 2.0 / grid_elements.pow(2) as f32;
-    let mut curr = 0.0;
-
-    let vectors: Vec<Vec<Vector>> = (0..grid_elements).map(|_| {
-        (0..grid_elements).map(|_| {
-            let v = Vector {
-                vector: vec2(random_range(-1.0, 1.0), random_range(-1.0, 1.0)),
-                radiant: curr,
-            };
-            curr += step;
-            v
-        }).collect()
-    }).collect();
-
-    println!("vector {}", vectors.len());
+    let vectors = for_vec_field(grid_elements);
 
     Model {
         ui: UI {
@@ -65,5 +50,7 @@ fn model(app: &App) -> Model {
         objects: Vec::new()
     }
 }
+
+
 
 
