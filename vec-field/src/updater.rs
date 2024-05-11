@@ -1,23 +1,27 @@
 use std::time::Instant;
 use nannou::App;
 use nannou::event::Update;
-use nannou::geom::{Point2, Vec2};
+use nannou::geom::{Point2, Rect, Vec2};
+use crate::drawers::convert_p;
 use crate::models::{Model, Vector};
 
 pub fn updater(_app: &App, _model: &mut Model, _update: Update) {
     if _model.ui.last_updated.elapsed().as_millis() >= 10 {
         _model.objects.iter_mut().for_each(|object| {
-            let vec = find_next_vec(&_model.vectors, _model.ui.grid_size, object.position);
+            let win = _app.window_rect();
+            let vec = find_next_vec(&_model.vectors, _model.ui.grid_size, object.position, win);
 
-            object.update_position(vec, _app.window_rect());
+            object.update_position(vec, win);
         });
         _model.ui.last_updated = Instant::now();
     }
 }
 
-fn find_next_vec(vectors: &Vec<Vec<Vector>>, grid_size: Vec2, curr_pos: Point2) -> Vec2 {
-    let (i, j) = ((curr_pos.x / grid_size.x) as usize, (curr_pos.y / grid_size.y) as usize);
-    let vector = mish_vectors(get_vec_around(i, j, vectors));
+fn find_next_vec(vectors: &Vec<Vec<Vector>>, grid_size: Vec2, curr_pos: Point2, rect: Rect) -> Vec2 {
+    let c_p = convert_p(curr_pos, rect);
+    let (i, j) = ((c_p.x / grid_size.x) as usize, (c_p.y / grid_size.y) as usize);
+    println!("{} {}", i, j);
+    let vector = mesh_vectors(get_vec_around(i, j, vectors));
     vector.direction
 }
 
@@ -25,7 +29,7 @@ fn get_vec_around(i: usize, j: usize, vec: &Vec<Vec<Vector>>) -> Vec<Vector> {
     let mut around = Vec::new();
     let directions = [
         (-1, -1), (-1, 0), (-1, 1),
-        (0, -1), /* (0, 0), */ (0, 1),
+        (0, -1), (0, 0), (0, 1),
         (1, -1), (1, 0), (1, 1),
     ];
 
@@ -42,7 +46,7 @@ fn get_vec_around(i: usize, j: usize, vec: &Vec<Vec<Vector>>) -> Vec<Vector> {
     around
 }
 
-fn mish_vectors(vectors: Vec<Vector>) -> Vector {
+fn mesh_vectors(vectors: Vec<Vector>) -> Vector {
     let n = vectors.len() as f32; // Convert to f32 for division
     if n == 0.0 {
         return Vector {

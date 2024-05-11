@@ -21,7 +21,7 @@ pub fn circle(draw: &Draw, point2: Point2, diameter: f32){
     draw.ellipse().xy(point2).radius(diameter);
 }
 
-fn convert_p(point2: Point2, window: Rect) -> Point2 {
+pub fn convert_p(point2: Point2, window: Rect) -> Point2 {
     let (c_x, c_y) = convert(point2.x, point2.y, window);
     pt2(c_x, c_y)
 }

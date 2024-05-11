@@ -5,7 +5,6 @@ mod drawers;
 mod events;
 mod vector_field;
 
-use std::ops::Div;
 use std::time::Instant;
 use nannou::App;
 use nannou::color::GRAY;

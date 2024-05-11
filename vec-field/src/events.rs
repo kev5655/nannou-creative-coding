@@ -9,7 +9,7 @@ pub fn pressed(_app: &App, _model: &mut Model, _button: MouseButton) {
     let position = _app.mouse.position();
      _model.objects.push(Object {
          position,
-         velocity: 1.0,
+         velocity: 5.0,
          vector: Vector {
              direction: vec2(random_range(-1.0, 1.0), random_range(-1.0, 1.0)),
              radiant: Default::default(),
